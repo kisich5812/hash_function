@@ -5,6 +5,7 @@
 
 static const int DEFAULT_LEN = 10;
 static const char* DEFAULT_ALPH = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_!@#$";
+static int START_NUM = 0;
 
 typedef struct _flags {
 	char* alph;

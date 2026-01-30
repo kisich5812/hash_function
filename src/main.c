@@ -4,16 +4,17 @@
 #include "main.h"
 
 Str* read_line();
-int make_hash(Str* phrase, Flags* params, int start_num);
-int extend(Str* phrase, int start_num);
-int symbol_hash(int sym, int start_num);
+int make_hash(Str* phrase, Flags* params);
+int extend(Str* phrase);
+int symbol_hash(int sym);
 int start_number(Str* phrase);
 
 int main(int argc, char* argv[]) {
 	Flags* params = process_flags(argc, argv);
 	if (!params) return -1;
 	Str* phrase = read_line();
-	make_hash(phrase, params, start_number(phrase));
+	start_number(phrase);
+	make_hash(phrase, params);
 	
 	for(int i = 0; i < params->len; i++)
 		printf("%c", params->alph[phrase->str[i]]);
@@ -39,27 +40,28 @@ int start_number(Str* phrase) {
 		sum += phrase->str[i];
 	sum = sum ^ 139;
 	sum = sum % 47;
-	return sum;
+	START_NUM = sum;
+	return 0;
 }
 
-int make_hash(Str* phrase, Flags* params, int start_num) {
+int make_hash(Str* phrase, Flags* params) {
 	size_t alph_len = strlen(params->alph);
 	while (phrase->len < params->len)
-		extend(phrase, start_num);
+		extend(phrase);
 
-	phrase->str[0] = symbol_hash(phrase->str[0], start_num) % alph_len;
+	phrase->str[0] = symbol_hash(phrase->str[0]) % alph_len;
 	for(int i = 1; i < phrase->len; i++) {
 		if (i >= params->len)
-			phrase->str[i % params->len] = (phrase->str[i % params->len] + phrase->str[i-1] + symbol_hash(phrase->str[i], start_num)) % alph_len;
-		phrase->str[i] = (phrase->str[i-1] + symbol_hash(phrase->str[i], start_num)) % alph_len;
+			phrase->str[i % params->len] = (phrase->str[i % params->len] + phrase->str[i-1] + symbol_hash(phrase->str[i])) % alph_len;
+		phrase->str[i] = (phrase->str[i-1] + symbol_hash(phrase->str[i])) % alph_len;
 	}
 	return 0;
 }
 
-int extend(Str* phrase, int start_num) {
+int extend(Str* phrase) {
 	char* mid_str = (char*) calloc(phrase->len * 2, sizeof(char));
 	for(int i = 0; i < phrase->len; i++) {
-		int mid_value = symbol_hash(phrase->str[i], start_num);
+		int mid_value = symbol_hash(phrase->str[i]);
 		while(mid_value < 1000)
 			mid_value *= 29;
 		mid_str[2*i] = mid_value%100;
@@ -71,9 +73,8 @@ int extend(Str* phrase, int start_num) {
 	phrase->str = mid_str;
 }
 
-int symbol_hash(int sym, int start_num) {
-	int start = start_num;
-	int rezult = start + sym;
+int symbol_hash(int sym) {
+	int rezult = START_NUM + sym;
 	rezult = rezult ^ 147;
 	rezult += rezult % 73;
 	rezult *= 7;

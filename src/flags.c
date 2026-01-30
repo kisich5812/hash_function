@@ -13,10 +13,12 @@ Flags* process_flags(int val_args, char** args) {
 	f->alph = (char*)DEFAULT_ALPH;
 	f->len = DEFAULT_LEN;
 	
-	for (int i = 0; i<val_args; i++) {
+	for (int i = 1; i<val_args; i++) {
 		if (strcmp(args[i], "--alph") == 0) {
-			if (i+1 < val_args)
+			if (i+1 < val_args) {
 				f->alph = args[i+1];
+				i++;
+			}
 			else 
 				return fprintf(stderr, "Не задан алфавит!\n"), NULL;
 		}
@@ -25,12 +27,15 @@ Flags* process_flags(int val_args, char** args) {
 				f->len = _string_to_int(args[i+1]);
 				if(f->len<0)
 					return fprintf(stderr, "Некорректно задана длина!\n"), NULL;
+				i++;
 			}
 			else 
 				return fprintf(stderr, "Не задана длина!\n"), NULL;
 		}
 		else if (strcmp(args[i], "--help") == 0)
 			return _print_help(), NULL;
+		else
+			return fprintf(stderr, "Не известный флаг \"%s\"\n", args[i]), NULL;
 	}
 	return f;
 }
