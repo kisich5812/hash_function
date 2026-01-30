@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
 Str* read_line() {
 	Str* input_str = (Str*) calloc(1, sizeof(Str));
 	printf("Введите фразу:\n");
-	getline(&input_str->str, &input_str->len, stdin);
+	getline((char**)&input_str->str, &input_str->len, stdin);
 	input_str->len = strlen(input_str->str);
 	input_str->str [input_str->len - 1] = 0;
 	input_str->len--;
@@ -61,7 +61,7 @@ int make_hash(Str* phrase, Flags* params) {
 }
 
 int extend(Str* phrase) {
-	char* mid_str = (char*) calloc(phrase->len * 2, sizeof(char));
+	signed char* mid_str = (signed char*) calloc(phrase->len * 2, sizeof(signed char));
 	for(int i = 0; i < phrase->len; i++) {
 		int mid_value = symbol_hash(phrase->str[i]);
 		while(mid_value < 1000)
@@ -73,6 +73,7 @@ int extend(Str* phrase) {
 	phrase->free = 1;
 	phrase->len *= 2;
 	phrase->str = mid_str;
+	return 0;
 }
 
 int symbol_hash(int sym) {
