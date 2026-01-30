@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include "main.h"
 
+int START_NUM = 0;
+
 Str* read_line();
 int make_hash(Str* phrase, Flags* params);
 int extend(Str* phrase);
